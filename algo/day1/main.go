@@ -83,20 +83,81 @@ func climbStairs(n int) int {
 // 左边哨兵发现数据小于基准数后停止，右边哨兵大于基准数停止。然后交换二者的值，直到相遇之后
 // 交换相遇位置跟基准数，实现操作。
 
-func quickSort(nums []int) {
+// 划分操作，选取一个pivot元素(基准数)，将小于基准数的放到它左边，大于基准数的放到它右边
+func partition(arr []int, lo, hi int) int {
+	var (
+		pivot = arr[lo]
+		// 左右哨兵
+		i, j = lo, hi
+	)
 
-}
-
-// 每一轮的操作，即保证基准数左边的序列均小于它，右边的大于它
-func partition(a []int, lo, hi int) int {
-	pivot := a[hi] // 基准数
-	i := lo - 1
-	for j := lo; j < hi; j++ {
-		if a[j] < pivot {
+	for i != j {
+		// 右哨兵移动到比基准数小的位置
+		for i < j && pivot < arr[j] {
+			j--
+		}
+		// 左哨兵移动到比基准数大的位置
+		for i < j && pivot >= arr[i] {
 			i++
-			a[j], a[i] = a[i], a[j]
+		}
+		if i < j {
+			// 交换哨兵位置
+			arr[i], arr[j] = arr[j], arr[i]
 		}
 	}
-	a[i+1], a[hi] = a[hi], a[i+1]
-	return i + 1
+	// 基准数归位
+	arr[lo], arr[i] = arr[i], arr[lo]
+	return i
+}
+
+// 快速排序递归函数
+func quicksortRec(arr []int, lo, hi int) {
+	if lo >= hi {
+		return
+	}
+
+	p := partition(arr, lo, hi)
+	// 对左右子序列继续进行划分
+	quicksortRec(arr, lo, p-1)
+	quicksortRec(arr, p+1, hi)
+}
+
+func QuickSort(arr []int) {
+	switch len(arr) {
+	case 0, 1:
+		return
+	}
+	quicksortRec(arr, 0, len(arr)-1)
+}
+
+// 快速排序的非递归解法
+func QuickSortNonRec(arr []int) {
+	switch len(arr) {
+	case 0, 1:
+		return
+	}
+	// 我们需要一个辅助栈来保存待排序的序列
+	stack := make([][]int, 0, len(arr)*2)
+
+	p := partition(arr, 0, len(arr)-1)
+	stack = append(stack, []int{0, p - 1})
+	stack = append(stack, []int{p + 1, len(arr) - 1})
+
+	for {
+		if len(stack) == 0 {
+			break
+		}
+		// pop一个待处理的序列
+		xy := stack[len(stack)-1]
+		stack = stack[:len(stack)-1]
+
+		lo, hi := xy[0], xy[1]
+		if lo >= hi {
+			continue
+		}
+
+		p = partition(arr, lo, hi)
+		stack = append(stack, []int{lo, p - 1})
+		stack = append(stack, []int{p + 1, hi})
+	}
 }
