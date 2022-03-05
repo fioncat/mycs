@@ -37,9 +37,6 @@ func maxSubArr(nums []int) int {
 	if len(nums) == 1 {
 		return nums[0]
 	}
-	if len(nums) == 2 {
-		return nums[0] + nums[1]
-	}
 
 	max := nums[0]
 	for i := 1; i < len(nums); i++ {

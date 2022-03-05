@@ -1,3 +1,3 @@
-module github.com/fioncat/cs-learning
+module github.com/fioncat/mycs
 
 go 1.17
